@@ -1,0 +1,52 @@
+DROP TABLE IF EXISTS patients;
+CREATE TABLE patients
+			(patient_id	INT PRIMARY KEY NOT NULL,
+			 first_name	TEXT,
+			 last_name	TEXT,
+			 gender	CHAR(1),
+			 birth_date	DATE,
+			 city	TEXT,
+			 allergies TEXT,
+			 height	INT,
+			 weight	INT);
+		
+DROP TABLE IF EXISTS admissions;
+CREATE TABLE admissions
+			(patient_id	INT NOT NULL,
+			admission_date DATE,
+			discharge_date DATE,
+			diagnosis TEXT,
+			PRIMARY KEY(patient_id, admission_date));
+
+DROP TABLE IF EXISTS doctors;
+CREATE TABLE doctors
+			(doctor_id INT PRIMARY KEY NOT NULL,
+			first_name TEXT,
+			last_name TEXT,
+			specialty TEXT);
+
+DROP TABLE IF EXISTS province_name;
+CREATE TABLE province_name
+			(province_id CHAR(2) PRIMARY KEY NOT NULL,
+			province_name TEXT);
+			
+ALTER TABLE patients
+ADD province_id	CHAR(2) NOT NULL;
+
+ALTER TABLE patients
+ADD CONSTRAINT FK_province_id
+FOREIGN KEY (province_id)
+REFERENCES province_name (province_id);
+
+ALTER TABLE admissions
+ADD attending_doctor_id	INT NOT NULL;
+
+ALTER TABLE admissions
+ADD CONSTRAINT FK_attending_doctor_id
+FOREIGN KEY (attending_doctor_id)
+REFERENCES doctors(doctor_id);
+
+ALTER TABLE admissions
+ADD CONSTRAINT FK_patient_id
+FOREIGN KEY (patient_id)
+REFERENCES patients(patient_id);
