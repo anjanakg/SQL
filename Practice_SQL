@@ -106,3 +106,91 @@ SELECT first_name
 FROM patients
 group by first_name
 having count(first_name) = 1;
+
+--Show patient_id and first_name from patients where their first_name start and ends with 's' and is at least 6 characters long.
+SELECT patient_id, first_name
+FROM patients
+WHERE (first_name Like 's%' aND first_name LIKE '%s') AND
+		LENGTH(first_name) >=6;
+    
+--Another way
+SELECT patient_id, first_name
+FROM patients
+WHERE first_name LIKE 's____%s';
+
+
+--Show patient_id, first_name, last_name from patients whos primary_diagnosis is 'Dementia'.
+--Primary diagnosis is stored in the admissions table.
+SELECT  p.patient_id, p.first_name, p.last_name
+FROM patients p
+JOIN admissions a ON p.patient_id  = a.patient_id 
+WHERE a.diagnosis = 'Dementia';
+  
+  
+--Display every patient's first_name. Order the list by the length of each name and then by alphbetically.
+SELECT  first_name
+from patients
+ORDER BY 
+	lENGTH(first_name),
+	first_name;
+  
+  
+--Show the total amount of male patients and the total amount of female patients in the patients table. Display the two results in the same row.
+SELECT 
+  (SELECT count(*) FROM patients WHERE gender='M') AS male_count, 
+  (SELECT count(*) FROM patients WHERE gender='F') AS female_count;
+  
+--Another way
+SELECT  COUNT(CASE WHEN gender='M' THEN 1 END) as male_count,
+		COUNT(CASE WHEN gender='F' THEN 1 END) as female_count
+from patients;
+
+
+--Show first and last name, allergies from patients which have allergies to either 'Penicillin' or 'Morphine'. 
+--Show results ordered ascending by allergies then by first_name then by last_name.
+SELECT first_name, last_name, allergies
+FROM patients
+where allergies IN ('Penicillin','Morphine')
+ORDER BY
+	allergies,
+    first_name,
+    last_name;
+    
+
+--Show patient_id, primary_diagnosis from admissions. Find patients admitted multiple times for the same primary_diagnosis.
+SELECT patient_id, diagnosis
+FROM admissions
+GROUP BY patient_id,
+		diagnosis
+HAVING COUNT(*)>1
+
+
+
+--Show the city and the total number of patients in the city.
+--Order from most to least patients and then by city name ascending.
+SELECT city, count(patient_id) as number_of_patients
+FROM patients
+GROUP BY city
+ORDER BY number_of_patients DESC,
+		city ASC;
+
+
+--Show first name, last name and role of every person that is either patient or doctor.
+The roles are either "Patient" or "Doctor"
+SELECT first_name, 
+	   last_name, 
+	   'Patient' AS role
+FROM patients
+UNION ALL
+SELECT first_name, 
+       last_name, 
+       'Doctor' AS role
+FROM doctors  
+
+
+----Show all allergies ordered by popularity. Remove NULL values from query.
+SELECT allergies, COUNT(allergies) AS total_diagnosis
+FROM patients
+WHERE allergies IS NOT NULL
+group by allergies
+ORDER BY total_diagnosis DESC;
