@@ -49,3 +49,14 @@ ORDER BY id;
 SELECT bike_number, MAX(end_time) AS last_used  
 FROM dc_bikeshare_q1_2012
 GROUP BY bike_number;
+
+
+**Number Of Units Per Nationality
+--Find the number of apartments per nationality that are owned by people under 30 years old.
+--Output the nationality along with the number of apartments.
+--Sort records by the apartments count in descending order.
+SELECT h.nationality, COUNT(DISTINCT u.unit_id) 
+FROM airbnb_hosts h
+JOIN  airbnb_units u ON h.host_id = u.host_id
+WHERE h.age<30 AND unit_type = 'Apartment'
+GROUP BY h.nationality;
