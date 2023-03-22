@@ -60,3 +60,13 @@ FROM airbnb_hosts h
 JOIN  airbnb_units u ON h.host_id = u.host_id
 WHERE h.age<30 AND unit_type = 'Apartment'
 GROUP BY h.nationality;
+
+
+** Top Ranked Songs
+--Find songs that have ranked in the top position. Output the track name and the number of times it ranked at the top. 
+--Sort your records by the number of times the song was in the top position in descending orde
+SELECT trackname, COUNT(trackname) as times_top1
+FROM spotify_worldwide_daily_song_ranking
+WHERE position = 1
+GROUP BY trackname
+ORDER BY times_top1 DESC;
